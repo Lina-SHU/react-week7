@@ -16,6 +16,8 @@
     "gh-pages": "^6.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.2",
+    "react-loading": "^2.0.3",
     "react-router": "^7.3.0",
     "sweetalert2": "^11.17.2"
   },
