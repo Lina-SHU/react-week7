@@ -5,8 +5,12 @@ const Layout = () => {
         return style.isActive ? 'header-nav-active' : ''
     };
     return (<>
-        <NavLink to="/" className={isActiveClass}>首頁</NavLink>
-        <Outlet />
+        <div className="container my-3">
+            <NavLink to="/" className={isActiveClass}>首頁</NavLink>
+            <div className="py-3">
+                <Outlet />
+            </div>
+        </div>
     </>)
 };
 
