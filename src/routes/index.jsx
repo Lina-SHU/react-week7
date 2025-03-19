@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 import AdminLayout from "../components/AdminLayout";
-import Home from "../src/views/Home";
-import AdminProduct from "../src/views/admin/products";
+import Home from "../views/Home";
+import AdminProduct from "../views/admin/products";
 
 const routes = [
     {
