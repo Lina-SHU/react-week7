@@ -1,15 +1,42 @@
 import { useForm } from "react-hook-form";
+import { authService } from "../service/auth.service";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const Home = () => {
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
         formState: { errors }
     } = useForm({
         mode: 'onTouched'
-    })
-    const onSubmit = (data) => {
-        console.log('login', data);
+    });
+    const onSubmit = async (data) => {
+        try {
+            const res = await authService.login(data);
+            if (!res.isSuccess) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: res.msg,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                return
+            }
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: res.msg,
+                showConfirmButton: false,
+                timer: 1500
+            });
+            navigate('/admin/products');
+        } finally {
+            // add loading
+        }
     };
     return (<>
         <div className="row justify-content-center">
