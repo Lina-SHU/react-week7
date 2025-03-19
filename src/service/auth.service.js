@@ -26,20 +26,17 @@ export const authService = {
     },
     // 登入驗證
     async loginCheck () {
-        try {
-            const res = await hexAxios.post('/api/user/check');
-            return res.data.success;
-        } catch (error) {
-            return;
-        }
+        const res = await hexAxios.post('/api/user/check');
+        return res.data.success;
     },
     // 登出
     async logout () {
         try {
             const res = await hexAxios.post('/logout');
+            const result = res.data;
             return {
                 isSuccess: true,
-                data: res.data.success
+                msg: result.message
             };
         } catch (error) {
             return {

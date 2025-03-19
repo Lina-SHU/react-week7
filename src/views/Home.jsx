@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { authService } from "../service/auth.service";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -38,6 +39,24 @@ const Home = () => {
             // add loading
         }
     };
+
+    // 登入驗證
+    const loginCheck = async () => {
+        try {
+            const res = await authService.loginCheck();
+            return res
+        } finally {
+            // add loading
+        }
+    };
+
+    useEffect(() => {
+        async () => {
+            if (await loginCheck()) {
+                navigate('/admin/products');
+            }
+        }
+    }, []);
     return (<>
         <div className="row justify-content-center">
             <div className="col-6">

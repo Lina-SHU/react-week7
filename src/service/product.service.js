@@ -10,12 +10,12 @@ export const productService = {
             if (!result.success) {
                 return {
                     isSuccess: false,
-                    msg: res.message
+                    msg: result.message
                 }
             }
             return {
                 isSuccess: true,
-                data: res.data
+                data: result
             };
         } catch (error) {
             return {
@@ -32,7 +32,7 @@ export const productService = {
             if (!result.success) {
                 return {
                     isSuccess: false,
-                    msg: res.message
+                    msg: result.message
                 }
             }
             return {
@@ -54,7 +54,7 @@ export const productService = {
             if (!result.success) {
                 return {
                     isSuccess: false,
-                    msg: res.message
+                    msg: result.message
                 }
             }
             return {
@@ -76,7 +76,7 @@ export const productService = {
             if (!result.success) {
                 return {
                     isSuccess: false,
-                    msg: res.message
+                    msg: result.message
                 }
             }
             return {
