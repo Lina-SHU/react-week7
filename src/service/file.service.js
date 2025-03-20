@@ -1,7 +1,7 @@
 import { hexAxios } from "./axios";
 const apiPath = import.meta.env.VITE_API_PATH;
 
-export const productService = {
+export const fileService = {
     // 圖片上傳
     async updatePhoto (formdata) {
         try {
@@ -15,7 +15,7 @@ export const productService = {
             }
             return {
                 isSuccess: true,
-                data: result.data
+                data: result.imageUrl
             };
         } catch (error) {
             return {
