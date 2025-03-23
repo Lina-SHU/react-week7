@@ -1,15 +1,16 @@
+import { memo } from "react";
 import { productService } from "../service/product.service";
 import { useDispatch } from "react-redux";
 import { addToast } from "../slice/toastSlice";
 import { toggleLoading } from "../slice/loadingSlice";
 
-const DeleteProductModal = ({ deleteProductModalRef, closeDeleteModal, tempProduct, getProducts }) => {
+const DeleteProductModal = memo(({ deleteProductModalRef, closeDeleteModal, tempDeleteProduct, getProducts }) => {
     const dispatch = useDispatch();
 
     const deleteProduct = async () => {
         try {
             dispatch(toggleLoading());
-            const res = await productService.deleteProduct(tempProduct.id);
+            const res = await productService.deleteProduct(tempDeleteProduct.id);
             if (!res.isSuccess) {
                 dispatch(addToast({
                     title: '錯誤',
@@ -38,7 +39,7 @@ const DeleteProductModal = ({ deleteProductModalRef, closeDeleteModal, tempProdu
                         <button type="button" className="btn-close" aria-label="Close" onClick={closeDeleteModal}></button>
                     </div>
                     <div className="modal-body">
-                        確認是否刪除 {tempProduct.title}？
+                        確認是否刪除 {tempDeleteProduct.title}？
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-sm btn-secondary" onClick={closeDeleteModal}>關閉</button>
@@ -48,6 +49,6 @@ const DeleteProductModal = ({ deleteProductModalRef, closeDeleteModal, tempProdu
             </div>
         </div>
     </>)
-};
+});
 
 export default DeleteProductModal;

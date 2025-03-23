@@ -1,10 +1,11 @@
+import { memo } from "react";
 import { useState, useEffect, useRef } from "react";
 import { fileService } from "../service/file.service";
 import { useDispatch } from "react-redux";
 import { addToast } from "../slice/toastSlice";
 import { toggleLoading } from "../slice/loadingSlice";
 
-const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, editProduct, setTempProduct }) => {
+const ProductModal = memo(({ productModalRef, tempProduct, closeModal, handleChange, editProduct, setTempProduct }) => {
     const dispatch = useDispatch();
     const fileInputRef = useRef(null);
     const [imageSelected, setImageSelected] = useState(null);
@@ -165,6 +166,6 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
             </div>
         </div>
     )
-};
+});
 
 export default ProductModal

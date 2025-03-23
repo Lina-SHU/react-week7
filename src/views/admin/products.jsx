@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Modal } from "bootstrap";
 import { useDispatch } from "react-redux";
 import { addToast } from "../../slice/toastSlice";
@@ -26,14 +26,15 @@ const AdminProduct = () => {
     const dispatch = useDispatch();
     const [products, setProducts] = useState([]);
     const [pagination, setPagination] = useState({});
-    const [tempProduct, setTempProduct] = useState(init_product);   
+    const [tempProduct, setTempProduct] = useState(init_product);
+    const [tempDeleteProduct, setTempDeleteProduct] = useState(init_product);
     
     const productModalRef = useRef(null);
     const productModal = useRef(null);
     const deleteProductModalRef = useRef(null);
     const deleteProductModal = useRef(null);
 
-    const getProducts = async (page = 1) => {
+    const getProducts = useCallback(async (page = 1) => {
         try {
             dispatch(toggleLoading());
             const res = await productService.getProducts(page);
@@ -50,41 +51,41 @@ const AdminProduct = () => {
         } finally {
             dispatch(toggleLoading());
         }
-    };
+    }, [dispatch]);
 
-    const getProductList = (e, page) => {
+    const getProductList = useCallback((e, page) => {
         e.preventDefault();
         getProducts(page);
-    };
+    }, [getProducts]);
 
     useEffect(() => {
         productModal.current = new Modal(productModalRef.current, { keyboard: false });
         deleteProductModal.current = new Modal(deleteProductModalRef.current, { keyboard: false });
         getProducts();
-    }, []);
+    }, [getProducts]);
 
     const openModal = (prd) => {
         const prdInfo = prd ? { ...prd, is_enabled: !!prd.is_enabled } : init_product;
         setTempProduct(prdInfo);
         productModal.current.show();
     };
-    const closeModal = () => productModal.current.hide();
+    const closeModal = useCallback(() => productModal.current.hide(), []);
 
     const openDeleteModal = (prd) => {
-        setTempProduct(prd);
+        setTempDeleteProduct(prd);
         deleteProductModal.current.show();
     };
-    const closeDeleteModal = () => deleteProductModal.current.hide();
+    const closeDeleteModal = useCallback(() => deleteProductModal.current.hide(), []);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value, checked, type } = e.target;
         setTempProduct({
             ...tempProduct,
             [name]: type === "checkbox" ? checked : value
         })
-    };
+    }, [tempProduct]);
 
-    const editProduct = async () => {
+    const editProduct = useCallback(async () => {
         try {
             dispatch(toggleLoading());
             let url = 'addProduct';
@@ -116,7 +117,7 @@ const AdminProduct = () => {
         } finally {
             dispatch(toggleLoading());
         }
-    };
+    }, [closeModal, dispatch, getProducts, tempProduct]);
     return (<>
         <h2 className="h4">商品管理</h2>
         <div className="text-end">
@@ -169,7 +170,7 @@ const AdminProduct = () => {
         <DeleteProductModal
             deleteProductModalRef={deleteProductModalRef}
             closeDeleteModal={closeDeleteModal}
-            tempProduct={tempProduct}
+            tempDeleteProduct={tempDeleteProduct}
             getProducts={getProducts}
         />
     </>)

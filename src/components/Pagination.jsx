@@ -1,4 +1,6 @@
-const Pagination = ({ pagination, getProductList }) => {
+import { memo } from "react";
+
+const Pagination = memo(({ pagination, getProductList }) => {
     return (
         <nav>
             <ul className="pagination">
@@ -12,6 +14,6 @@ const Pagination = ({ pagination, getProductList }) => {
             </ul>
         </nav>
     )
-};
+});
 
 export default Pagination;
