@@ -1,27 +1,26 @@
 import { productService } from "../service/product.service";
-import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { addToast } from "../slice/toastSlice";
 
 const DeleteProductModal = ({ deleteProductModalRef, closeDeleteModal, tempProduct, getProducts }) => {
+    const dispatch = useDispatch();
+
     const deleteProduct = async () => {
         try {
             const res = await productService.deleteProduct(tempProduct.id);
             if (!res.isSuccess) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: res.msg,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                dispatch(addToast({
+                    title: '錯誤',
+                    text: res.msg,
+                    status: 'danger'
+                }));
                 return;
             }
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: res.msg,
-                showConfirmButton: false,
-                timer: 1500
-            });
+            dispatch(addToast({
+                title: '成功',
+                text: res.msg,
+                status: 'success'
+            }));
             closeDeleteModal();
             getProducts();
         } finally {

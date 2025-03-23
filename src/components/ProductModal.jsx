@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import Swal from "sweetalert2";
 import { fileService } from "../service/file.service";
+import { useDispatch } from "react-redux";
+import { addToast } from "../slice/toastSlice";
 
 const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, editProduct, setTempProduct }) => {
+    const dispatch = useDispatch();
     const fileInputRef = useRef(null);
     const [imageSelected, setImageSelected] = useState(null);
 
@@ -28,26 +30,22 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
         try {
             const res = await fileService.updatePhoto(imageSelected);
             if (!res.isSuccess) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: res.msg,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                dispatch(addToast({
+                    title: '錯誤',
+                    text: res.msg,
+                    status: 'danger'
+                }));
                 return;
             }
             setTempProduct({
                 ...tempProduct,
                 imageUrl: res.data
             })
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: '上傳成功',
-                showConfirmButton: false,
-                timer: 1500
-            });
+            dispatch(addToast({
+                title: '成功',
+                text: '圖片上傳成功',
+                status: 'success'
+            }));
         } finally {
             // add loading
         }

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Modal } from "bootstrap";
+import { useDispatch } from "react-redux";
+import { addToast } from "../../slice/toastSlice";
 import { productService } from "../../service/product.service";
-import Swal from "sweetalert2";
 import Pagination from "../../components/Pagination";
 import ProductModal from "../../components/ProductModal";
 import DeleteProductModal from "../../components/DeleteProductModal";
@@ -21,6 +22,7 @@ const init_product = {
   };
 
 const AdminProduct = () => {
+    const dispatch = useDispatch();
     const [products, setProducts] = useState([]);
     const [pagination, setPagination] = useState({});
     const [tempProduct, setTempProduct] = useState(init_product);   
@@ -34,13 +36,11 @@ const AdminProduct = () => {
         try {
             const res = await productService.getProducts(page);
             if (!res.isSuccess) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: res.msg,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                dispatch(addToast({
+                    title: '錯誤',
+                    text: res.msg,
+                    status: 'danger'
+                }));
                 return;
             }
             setProducts(res.data.products);
@@ -62,7 +62,6 @@ const AdminProduct = () => {
     }, []);
 
     const openModal = (prd) => {
-        console.log(prd);
         const prdInfo = prd ? { ...prd, is_enabled: !!prd.is_enabled } : init_product;
         setTempProduct(prdInfo);
         productModal.current.show();
@@ -97,22 +96,18 @@ const AdminProduct = () => {
             }
             const res = await productService[url](data);
             if (!res.isSuccess) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: res.msg,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                dispatch(addToast({
+                    title: '錯誤',
+                    text: res.msg,
+                    status: 'danger'
+                }));
                 return;
             }
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: res.msg,
-                showConfirmButton: false,
-                timer: 1500
-            });
+            dispatch(addToast({
+                title: '成功',
+                text: `${tempProduct.id ? '編輯' : '新增'}產品成功`,
+                status: 'success'
+            }));
             closeModal();
             getProducts();
         } finally {

@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { authService } from "../service/auth.service";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import { addToast } from "../slice/toastSlice";
 
 const Home = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const {
         register,
@@ -18,22 +20,18 @@ const Home = () => {
         try {
             const res = await authService.login(data);
             if (!res.isSuccess) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: res.msg,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                dispatch(addToast({
+                    title: '錯誤',
+                    text: res.msg,
+                    status: 'danger'
+                }));
                 return
             }
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: res.msg,
-                showConfirmButton: false,
-                timer: 1500
-            });
+            dispatch(addToast({
+                title: '成功',
+                text: res.msg,
+                status: 'success'
+            }));
             navigate('/admin/products');
         } finally {
             // add loading
@@ -51,11 +49,11 @@ const Home = () => {
     };
 
     useEffect(() => {
-        async () => {
+        (async () => {
             if (await loginCheck()) {
                 navigate('/admin/products');
             }
-        }
+        })();
     }, []);
     return (<>
         <div className="row justify-content-center">
