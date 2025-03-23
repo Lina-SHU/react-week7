@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { fileService } from "../service/file.service";
 import { useDispatch } from "react-redux";
 import { addToast } from "../slice/toastSlice";
+import { toggleLoading } from "../slice/loadingSlice";
 
 const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, editProduct, setTempProduct }) => {
     const dispatch = useDispatch();
@@ -13,12 +14,32 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
     }, [tempProduct]);
 
     const handleImage = (e, index) => {
-        const newImages = { ...tempProduct.imagesUrl };
+        const newImages = [...tempProduct.imagesUrl];
         newImages[index] = e.target.value;
         setTempProduct({
             ...tempProduct,
             imagesUrl: newImages
         });
+    };
+
+    const addImage = () => {
+        const imagesUrl = [...tempProduct.imagesUrl];
+        imagesUrl.push('');
+        setTempProduct({
+            ...tempProduct,
+            imagesUrl
+        });
+        console.log(tempProduct.imagesUrl);
+    };
+
+    const deleteImage = () => {
+        const imagesUrl = [...tempProduct.imagesUrl];
+        imagesUrl.pop();
+        setTempProduct({
+            ...tempProduct,
+            imagesUrl
+        });
+        console.log(tempProduct.imagesUrl);
     };
 
     const chooseImage = (e) => {
@@ -28,6 +49,7 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
     };
     const uploadImage = async () => {
         try {
+            dispatch(toggleLoading());
             const res = await fileService.updatePhoto(imageSelected);
             if (!res.isSuccess) {
                 dispatch(addToast({
@@ -47,7 +69,7 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
                 status: 'success'
             }));
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
     return (
@@ -112,7 +134,7 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
                                     {
                                         tempProduct.imagesUrl && tempProduct.imagesUrl.map((image, index) => {
                                             return (
-                                                <div key={image} className="col-lg-6">
+                                                <div key={image} className="col-lg-6 mb-2">
                                                     <input type="text" value={image} onChange={(e) => handleImage(e, index)} className="form-control" placeholder="請輸入圖片網址" />
                                                     {
                                                         image && (<img src={image} alt={tempProduct.title} className="img-fluid w-100"/>)
@@ -122,8 +144,16 @@ const ProductModal = ({ productModalRef, tempProduct, closeModal, handleChange, 
                                         })
                                     }
                                 </div>
-                                <button type="button" className="btn py-1 w-100 btn-outline-primary mb-2">新增圖片</button>
-                                <button type="button" className="btn py-1 w-100 btn-outline-danger">刪除圖片</button>
+                                {
+                                    tempProduct.imagesUrl.length < 5 && tempProduct.imagesUrl[tempProduct.imagesUrl.length - 1] && (
+                                        <button type="button" className="btn py-1 w-100 btn-outline-primary mb-2" onClick={addImage}>新增圖片</button>
+                                    )
+                                }
+                                {
+                                    tempProduct.imagesUrl.length > 1 && (
+                                        <button type="button" className="btn py-1 w-100 btn-outline-danger" onClick={deleteImage}>刪除圖片</button>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>
