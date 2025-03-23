@@ -4,6 +4,7 @@ import { authService } from "../service/auth.service";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { addToast } from "../slice/toastSlice";
+import { toggleLoading } from "../slice/loadingSlice";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Home = () => {
     });
     const onSubmit = async (data) => {
         try {
+            dispatch(toggleLoading());
             const res = await authService.login(data);
             if (!res.isSuccess) {
                 dispatch(addToast({
@@ -34,17 +36,18 @@ const Home = () => {
             }));
             navigate('/admin/products');
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
 
     // 登入驗證
     const loginCheck = async () => {
         try {
+            dispatch(toggleLoading());
             const res = await authService.loginCheck();
             return res
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
 

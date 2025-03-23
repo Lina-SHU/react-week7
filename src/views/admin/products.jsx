@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Modal } from "bootstrap";
 import { useDispatch } from "react-redux";
 import { addToast } from "../../slice/toastSlice";
+import { toggleLoading } from "../../slice/loadingSlice";
 import { productService } from "../../service/product.service";
 import Pagination from "../../components/Pagination";
 import ProductModal from "../../components/ProductModal";
@@ -34,6 +35,7 @@ const AdminProduct = () => {
 
     const getProducts = async (page = 1) => {
         try {
+            dispatch(toggleLoading());
             const res = await productService.getProducts(page);
             if (!res.isSuccess) {
                 dispatch(addToast({
@@ -46,7 +48,7 @@ const AdminProduct = () => {
             setProducts(res.data.products);
             setPagination(res.data.pagination);
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
 
@@ -84,6 +86,7 @@ const AdminProduct = () => {
 
     const editProduct = async () => {
         try {
+            dispatch(toggleLoading());
             let url = 'addProduct';
             if (tempProduct.id) {
                 url = 'editProduct'
@@ -111,7 +114,7 @@ const AdminProduct = () => {
             closeModal();
             getProducts();
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
     return (<>

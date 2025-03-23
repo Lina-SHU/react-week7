@@ -1,12 +1,14 @@
 import { productService } from "../service/product.service";
 import { useDispatch } from "react-redux";
 import { addToast } from "../slice/toastSlice";
+import { toggleLoading } from "../slice/loadingSlice";
 
 const DeleteProductModal = ({ deleteProductModalRef, closeDeleteModal, tempProduct, getProducts }) => {
     const dispatch = useDispatch();
 
     const deleteProduct = async () => {
         try {
+            dispatch(toggleLoading());
             const res = await productService.deleteProduct(tempProduct.id);
             if (!res.isSuccess) {
                 dispatch(addToast({
@@ -24,7 +26,7 @@ const DeleteProductModal = ({ deleteProductModalRef, closeDeleteModal, tempProdu
             closeDeleteModal();
             getProducts();
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
     return (<>

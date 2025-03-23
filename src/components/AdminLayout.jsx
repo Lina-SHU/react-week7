@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { authService } from "../service/auth.service";
 import { addToast } from "../slice/toastSlice";
 import Toast from "./Toast";
+import Loading from "./Loading";
+import { toggleLoading } from "../slice/loadingSlice";
 
 const AdminLayout = () => {
     const navigate = useNavigate();
@@ -15,6 +17,7 @@ const AdminLayout = () => {
     const logout = async (e) => {
         e.preventDefault();
         try {
+            dispatch(toggleLoading());
             const res = await authService.logout();
             if (!res.isSuccess) {
                 dispatch(addToast({
@@ -31,7 +34,7 @@ const AdminLayout = () => {
             }));
             navigate('/');
         } finally {
-            // add loading
+            dispatch(toggleLoading());
         }
     };
     return (<>
@@ -44,7 +47,10 @@ const AdminLayout = () => {
 
             {/* toast 訊息 */}
             <Toast />
+
         </div>
+        {/* loading 動畫 */}
+        <Loading />
     </>)
 };
 
